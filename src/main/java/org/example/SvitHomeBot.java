@@ -24,15 +24,15 @@ public class SvitHomeBot extends TelegramLongPollingBot {
     @Override
     public String getBotUsername() {
         return
-                "SvitHomeBot";
-                //"TryamkinsBot";
+                //"SvitHomeBot";
+                "TryamkinsBot";
     }
 
     @Override
     public String getBotToken() {
         return
-                "7116590369:AAHTmFYS9Bgg1LiDF7CmOC7uIWKL7_XBx8s";
-         //"5355288386:AAFEoSF-H7A592K1xziUay1J6DUfMXeoIlE";
+         //       "7116590369:AAHTmFYS9Bgg1LiDF7CmOC7uIWKL7_XBx8s";
+         "5355288386:AAFEoSF-H7A592K1xziUay1J6DUfMXeoIlE";
     }
 
     @Override
