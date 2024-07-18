@@ -24,15 +24,15 @@ public class SvitHomeBot extends TelegramLongPollingBot {
     @Override
     public String getBotUsername() {
         return
-                //"SvitHomeBot";
-                "TryamkinsBot";
+                "SvitHomeBot";
+                //"TryamkinsBot";
     }
 
     @Override
     public String getBotToken() {
         return
-         //       "7116590369:AAHTmFYS9Bgg1LiDF7CmOC7uIWKL7_XBx8s";
-         "5355288386:AAFEoSF-H7A592K1xziUay1J6DUfMXeoIlE";
+                "7116590369:AAHTmFYS9Bgg1LiDF7CmOC7uIWKL7_XBx8s";
+         //"5355288386:AAFEoSF-H7A592K1xziUay1J6DUfMXeoIlE";
     }
 
     @Override
@@ -64,6 +64,7 @@ public class SvitHomeBot extends TelegramLongPollingBot {
             } catch (TelegramApiException e) {
                 throw new RuntimeException(e);
             }
+            autoLight(chatId);
         }
 
     }
@@ -73,9 +74,11 @@ public class SvitHomeBot extends TelegramLongPollingBot {
         task = new TimerTask() {
             @Override
             public void run() {
+                System.out.println("svit" + svit);
+                System.out.println("Ewelink.Status" + Ewelink.Status());
                 if (svit != Ewelink.Status())
                     light(chatId);
-                System.out.println("autolight working" + Utils.getTime());
+                System.out.println("autolight working  " + Utils.getTime());
                 //   showMessage(chatId, "working");
             }
         };
