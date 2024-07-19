@@ -7,7 +7,6 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
-import java.util.Timer;
 import java.util.TimerTask;
 
 
@@ -60,7 +59,7 @@ public class SvitHomeBot extends TelegramLongPollingBot {
             stopAutoLight();
         }
         if (update.hasMessage() && update.getMessage().getText().equals("/test")) {
-           Check.testSendMsg();
+           SendCurlToGroup.testSendMsg();
         }
         if (update.hasMessage() && update.getMessage().getText().equals("/start")) {
             SendMessage sendMessage = new SendMessage();
