@@ -56,6 +56,9 @@ public class SvitHomeBot extends TelegramLongPollingBot {
         if (update.hasMessage() && update.getMessage().getText().equals("/stop")) {
             stopAutoLight();
         }
+        if (update.hasMessage() && update.getMessage().getText().equals("/test")) {
+           Check.testSendMsg();
+        }
         if (update.hasMessage() && update.getMessage().getText().equals("/start")) {
             SendMessage sendMessage = new SendMessage();
             sendMessage.setChatId(update.getMessage().getChatId().toString());
@@ -77,10 +80,10 @@ public class SvitHomeBot extends TelegramLongPollingBot {
         task = new TimerTask() {
             @Override
             public void run() {
-                System.out.println("svit" + svit);
+                System.out.println("svit - " + svit);
                 System.out.println("Ewelink.Status - " + Ewelink.Status());
                 if (svit != Ewelink.Status())
-                light(chatId);
+                light(-4242637154L);
                 System.out.println("autolight working  " + Utils.getTime());
                 //   showMessage(chatId, "working");
             }
