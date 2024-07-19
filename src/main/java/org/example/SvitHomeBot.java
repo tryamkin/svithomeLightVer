@@ -12,14 +12,16 @@ import java.util.TimerTask;
 
 
 public class SvitHomeBot extends TelegramLongPollingBot {
-    private boolean light ;
-    private boolean svit ;
-    private TimerTask task;
-    private String chatIdstr;
+    private static boolean light ;
+    private static boolean svit ;
+    private static TimerTask task;
+    private static String chatIdstr;
+    private static Long chatIdGroup = -4242637154L ;
 
     public static void main(String[] args) throws TelegramApiException {
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
         telegramBotsApi.registerBot(new SvitHomeBot());
+
     }
 
     @Override
@@ -32,7 +34,7 @@ public class SvitHomeBot extends TelegramLongPollingBot {
     @Override
     public String getBotToken() {
         return
-                "7116590369:AAHTmFYS9Bgg1LiDF7CmOC7uIWKL7_XBx8s";
+               "7116590369:AAHTmFYS9Bgg1LiDF7CmOC7uIWKL7_XBx8s";
          //"5355288386:AAFEoSF-H7A592K1xziUay1J6DUfMXeoIlE";
     }
 
@@ -40,6 +42,7 @@ public class SvitHomeBot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         Long chatId = getChatId(update);
         chatIdstr = update.getMessage().getChatId().toString();
+        autoLight(chatIdGroup);
         if (update.hasMessage() && update.getMessage().getText().equals("/status")) {
             light(chatId);
             System.out.println("Firstname - " + update.getMessage().getChat().getFirstName());
@@ -49,8 +52,8 @@ public class SvitHomeBot extends TelegramLongPollingBot {
             Ewelink.login();
         }
         if (update.hasMessage() && update.getMessage().getText().equals("/auto")) {
-            showMessage( "Запуск автоматичного сповіщення зміни статусу світла, наразі:");
-            light(chatId);
+            // showMessage( "Запуск автоматичного сповіщення зміни статусу світла, наразі:");
+            // light(chatId);
             autoLight(chatId);
         }
         if (update.hasMessage() && update.getMessage().getText().equals("/stop")) {
@@ -62,15 +65,15 @@ public class SvitHomeBot extends TelegramLongPollingBot {
         if (update.hasMessage() && update.getMessage().getText().equals("/start")) {
             SendMessage sendMessage = new SendMessage();
             sendMessage.setChatId(update.getMessage().getChatId().toString());
-            sendMessage.setText("Привіт, я вмію показувати актуальні дані світла в домі (поки що тільки 1й ввод)" +
-                    " працюю за принципом опитування смарт пристрою кожні 3и хвилини." +
-                    " Автоматичне надсилання зміг реалізувати тільки в групі до якої можна доєднатися за посиланням https://t.me/+UpYU0hcXZmM0MDgy ");
+            sendMessage.setText("Привіт, я вмію показувати актуальні дані світла в домі (поки що тільки 1й ввод).\n" +
+                    "Автоматична розсилка повідомлень про стан світла є у цій групі - https://t.me/svitlobot_virmenska_6\n" );
+            //  "Ідея полягає в тому, щоб показати стан світла при частковому відключенню будинка. "
             try {
                 execute(sendMessage);
             } catch (TelegramApiException e) {
                 throw new RuntimeException(e);
             }
-            autoLight(chatId);
+
         }
 
     }
@@ -100,7 +103,7 @@ public class SvitHomeBot extends TelegramLongPollingBot {
     }
 
 
-    private void light(Long chatId)  {
+    private  void light(Long chatId)  {
         light = Ewelink.Status();
         SendMessage sendMessage3 = new SendMessage();
         sendMessage3.setChatId(chatId);
