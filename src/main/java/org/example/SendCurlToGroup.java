@@ -10,8 +10,7 @@ public class SendCurlToGroup {
     public static void testSendMsg(){
         try {
             // Выполнение команды
-            Process process = Runtime.getRuntime().exec("bash -c curl -s https://api.telegram.org/bot7116590369:AAHTmFYS9Bgg1LiDF7CmOC7uIWKL7_XBx8s/sendMessage?chat_id=-4242637154&text=simple_cUrl_test_");
-
+            Process process = Runtime.getRuntime().exec(String.format("bash -c curl -s https://api.telegram.org/bot7116590369:AAHTmFYS9Bgg1LiDF7CmOC7uIWKL7_XBx8s/sendMessage?chat_id=-4242637154&text=simple_cUrl_test_"));
             // Чтение вывода команды
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
