@@ -82,8 +82,9 @@ public class SvitHomeBot extends TelegramLongPollingBot {
             public void run() {
                 System.out.println("svit" + svit);
                 System.out.println("Ewelink.Status - " + Ewelink.Status());
+
                 if (svit != Ewelink.Status())
-                light(chatId);
+                    light(chatId);
                 System.out.println("autolight working  " + Utils.getTime());
                 //   showMessage(chatId, "working");
             }
