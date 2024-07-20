@@ -42,7 +42,7 @@ public class SvitHomeBot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         Long chatId = getChatId(update);
         chatIdstr = update.getMessage().getChatId().toString();
-        autoLight(chatIdGroup);
+
         if (update.hasMessage() && update.getMessage().getText().equals("/status")) {
             light(chatId);
             System.out.println("Firstname - " + update.getMessage().getChat().getFirstName());
