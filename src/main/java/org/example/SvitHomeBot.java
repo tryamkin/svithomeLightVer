@@ -112,12 +112,21 @@ public class SvitHomeBot extends TelegramLongPollingBot {
         if (light) {
             svit = true;
             String msgLight = "Світло є" + " \uD83D\uDCA1 "+ Utils.getTime();
-            showMessage(msgLight);
+            try {
+                executeAsync(sendMessage3);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
 
         } else {
             svit = false;
             String msgNoLight = "Світла нема " + " \uD83D\uDD6F " + Utils.getTime();
             showMessage(msgNoLight);
+            try {
+                executeAsync(sendMessage3);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
         }
 
     }
