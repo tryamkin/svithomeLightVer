@@ -101,7 +101,7 @@ public class SvitHomeBot extends TelegramLongPollingBot {
     }
 
 
-    private  void light(Long chatId)  {
+    private void light(Long chatId)  {
         light = Ewelink.Status();
         SendMessage sendMessage3 = new SendMessage();
         sendMessage3.setChatId(chatId);
