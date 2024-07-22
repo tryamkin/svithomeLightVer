@@ -15,7 +15,7 @@ public class SvitHomeBot extends TelegramLongPollingBot {
     private static boolean svit ;
     private static boolean svit2 ;
     private static TimerTask task;
-    static Long chatIdGroup = -4242637154L ;
+    static Long chatIdGroup = -1002154614126L ;
     static String msgLight = "світло є" + " \uD83D\uDCA1 ";
     static String msgNoLight = "світла нема " + " \uD83D\uDD6F ";
     static String vvod1 = "Перший ввод - " ;
@@ -53,7 +53,7 @@ public class SvitHomeBot extends TelegramLongPollingBot {
             Ewelink.login();
         }
         if (update.hasMessage() && update.getMessage().getText().equals("/auto")) {
-            autoLight(-4242637154L, update);
+            autoLight(-1002154614126L , update);
             autoLight2(update);
         }
         if (update.hasMessage() && update.getMessage().getText().equals("/stop")) {
