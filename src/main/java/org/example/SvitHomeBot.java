@@ -148,7 +148,7 @@ public class SvitHomeBot extends TelegramLongPollingBot {
         }
         if (light2) {
           //  svit2 = true;
-            sendMessage3.setText(vvod2 + warnMsg + " тестується" );
+            sendMessage3.setText(vvod2 + msgLight+ Utils.getTime() + " тестується" );
             sendMessage3.setParseMode("markdown");
             try {
                 executeAsync(sendMessage3);
@@ -157,7 +157,7 @@ public class SvitHomeBot extends TelegramLongPollingBot {
             }
         } else {
            // svit2 = false;
-            sendMessage3.setText(vvod2 + warnMsg + " тестується");
+            sendMessage3.setText(vvod2 + msgNoLight + Utils.getTime() + " тестується");
             sendMessage3.setParseMode("markdown");
             try {
                 executeAsync(sendMessage3);
