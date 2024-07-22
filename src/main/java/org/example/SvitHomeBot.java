@@ -23,7 +23,7 @@ public class SvitHomeBot extends TelegramLongPollingBot {
     public static final String warnMsg = """ 
             *Пристрій потребує встановлення.* """;
     public static final String greeting = """
-                Привіт, я вмію показувати актуальні дані світла в домі (поки що тільки 1й ввод).\n Автоматична розсилка повідомлень про стан світла є у цій групі - https://t.me/svitlobot_virmenska_6""";
+                Привіт, я вмію показувати актуальні дані світла в домі (поки що тільки 1й ввод).\n Обговорення та автоматична розсилка повідомлень про стан світла є у цій групі - https://t.me/svithomeVirmenska6""";
 
 
     public static void main(String[] args) throws TelegramApiException {
@@ -54,7 +54,7 @@ public class SvitHomeBot extends TelegramLongPollingBot {
         }
         if (update.hasMessage() && update.getMessage().getText().equals("/auto")) {
             autoLight(-4242637154L, update);
-           // autoLight2(update);
+            autoLight2(update);
         }
         if (update.hasMessage() && update.getMessage().getText().equals("/stop")) {
             stopAutoLight();
@@ -148,7 +148,7 @@ public class SvitHomeBot extends TelegramLongPollingBot {
         }
         if (light2) {
           //  svit2 = true;
-            sendMessage3.setText(vvod2 + warnMsg );
+            sendMessage3.setText(vvod2 + warnMsg + " тестується" );
             sendMessage3.setParseMode("markdown");
             try {
                 executeAsync(sendMessage3);
@@ -157,7 +157,7 @@ public class SvitHomeBot extends TelegramLongPollingBot {
             }
         } else {
            // svit2 = false;
-            sendMessage3.setText(vvod2 + warnMsg);
+            sendMessage3.setText(vvod2 + warnMsg + " тестується");
             sendMessage3.setParseMode("markdown");
             try {
                 executeAsync(sendMessage3);
