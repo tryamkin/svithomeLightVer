@@ -11,11 +11,13 @@ public class Ewelink {
     private static final String CONTENT_TYPE_HEADER = "application/json";
     private static final String ORIGIN_HEADER = "origin: https://web.ewelink.cc";
     private static final String REQUEST_BODY = "{\"thingList\":[{\"id\":\"100063cabd\"}]}";
-    private static boolean online = false;
+    private static final String REQUEST_BODY2 = "{\"thingList\":[{\"id\":\"10000d43dd\"}]}";
+    private static boolean online;
     private static boolean repair = false;
 
     public static void main(String[] args) throws InterruptedException {
         Status();
+        Status2();
     }
 
 
@@ -64,9 +66,36 @@ public class Ewelink {
         Utils.showTime();
         // System.out.println("Errors - " + jsonPath.get("error").toString());
         online = jsonPath.get("data.thingList[0].itemData.online");
-        System.out.println("Online - " +jsonPath.get("data.thingList[0].itemData.online").toString());
+      //  System.out.println("Online Vvod1 - " +jsonPath.get("data.thingList[0].itemData.online").toString());
         //System.out.println("switch - " +jsonPath.get("data.thingList[0].itemData.params.switch").toString());
         //  System.out.println("pulse - " +jsonPath.get("data.thingList[0].itemData.params.pulse").toString());
+        repair = false;
+        return online;
+    }
+    public static boolean Status2 (){
+        if (AUTHORIZATION_HEADER==null){
+            login();
+        }
+        Response response = given()
+                .baseUri(API_URL)
+                .header("Authorization", AUTHORIZATION_HEADER)
+                .header("Content-Type", CONTENT_TYPE_HEADER)
+                .header("Origin", ORIGIN_HEADER)
+                .body(REQUEST_BODY2)
+                .when()
+                .post()
+                .then()
+                // .statusCode(200) // Assert successful response (optional)
+                //.log().body()
+                .extract().response();
+        JsonPath jsonPath = response.jsonPath();
+        if (jsonPath.get("error").toString().equals("401")){
+            return repair = true;
+        }
+
+        Utils.showTime();
+        online = jsonPath.get("data.thingList[0].itemData.online");
+      //  System.out.println("Online Vvod2 - " +jsonPath.get("data.thingList[0].itemData.online").toString());
         repair = false;
         return online;
     }

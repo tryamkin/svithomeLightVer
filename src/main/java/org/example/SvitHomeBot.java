@@ -6,17 +6,25 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
-
-import java.util.Timer;
 import java.util.TimerTask;
 
 
 public class SvitHomeBot extends TelegramLongPollingBot {
     private static boolean light ;
+    private static boolean light2 ;
     private static boolean svit ;
+    private static boolean svit2 ;
     private static TimerTask task;
-    private static String chatIdstr;
-    private static Long chatIdGroup = -4242637154L ;
+    static Long chatIdGroup = -4242637154L ;
+    static String msgLight = "світло є" + " \uD83D\uDCA1 ";
+    static String msgNoLight = "світла нема " + " \uD83D\uDD6F ";
+    static String vvod1 = "Перший ввод - " ;
+    static String vvod2 = "Другий ввод - " ;
+    public static final String warnMsg = """ 
+            *Пристрій потребує встановлення.* """;
+    public static final String greeting = """
+                Привіт, я вмію показувати актуальні дані світла в домі (поки що тільки 1й ввод).\n Автоматична розсилка повідомлень про стан світла є у цій групі - https://t.me/svitlobot_virmenska_6""";
+
 
     public static void main(String[] args) throws TelegramApiException {
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
@@ -26,70 +34,74 @@ public class SvitHomeBot extends TelegramLongPollingBot {
 
     @Override
     public String getBotUsername() {
-        return
-                "SvitHomeBot";
-                //"TryamkinsBot";
+        return "SvitHomeBot";
     }
-
     @Override
     public String getBotToken() {
-        return
-               "7116590369:AAHTmFYS9Bgg1LiDF7CmOC7uIWKL7_XBx8s";
-         //"5355288386:AAFEoSF-H7A592K1xziUay1J6DUfMXeoIlE";
+        return "7116590369:AAHTmFYS9Bgg1LiDF7CmOC7uIWKL7_XBx8s";
     }
 
     @Override
     public void onUpdateReceived(Update update) {
-        Long chatId = getChatId(update);
-        chatIdstr = update.getMessage().getChatId().toString();
-
+        Long chatId = update.getMessage().getChatId();
         if (update.hasMessage() && update.getMessage().getText().equals("/status")) {
             light(chatId);
-            System.out.println("Firstname - " + update.getMessage().getChat().getFirstName());
-            System.out.println("Nickname - " + update.getMessage().getChat().getUserName());
+            light2(chatId);
+            Utils.showConsoleLogs(update);
         }
         if (update.hasMessage() && update.getMessage().getText().equals("/token")) {
             Ewelink.login();
         }
         if (update.hasMessage() && update.getMessage().getText().equals("/auto")) {
-            // showMessage( "Запуск автоматичного сповіщення зміни статусу світла, наразі:");
-            // light(chatId);
-            autoLight(chatId);
+            autoLight(-4242637154L, update);
+           // autoLight2(update);
         }
         if (update.hasMessage() && update.getMessage().getText().equals("/stop")) {
             stopAutoLight();
         }
         if (update.hasMessage() && update.getMessage().getText().equals("/start")) {
-            SendMessage sendMessage = new SendMessage();
-            sendMessage.setChatId(update.getMessage().getChatId().toString());
-            sendMessage.setText("Привіт, я вмію показувати актуальні дані світла в домі (поки що тільки 1й ввод).\n" +
-                    "Автоматична розсилка повідомлень про стан світла є у цій групі - https://t.me/svitlobot_virmenska_6\n" );
-            //  "Ідея полягає в тому, щоб показати стан світла при частковому відключенню будинка. "
-            try {
-                execute(sendMessage);
-            } catch (TelegramApiException e) {
-                throw new RuntimeException(e);
-            }
-
+            new Utils().sendMsg(greeting, chatId);
+            Utils.showConsoleLogs(update);
         }
 
     }
 
-    private void autoLight(Long chatId){
+    private void autoLight(Long chatId, Update update ){
         java.util.Timer timer = new java.util.Timer();
         task = new TimerTask() {
             @Override
             public void run() {
-                System.out.println("svit" + svit);
-                System.out.println("Ewelink.Status - " + Ewelink.Status());
 
-                if (svit != Ewelink.Status())
-                    light(chatId);
+                System.out.println("svit " + svit);
+                System.out.println("Ewelink.Status - " + Ewelink.Status());
+                if (svit != Ewelink.Status()) {
+                    svit = Ewelink.Status();
+                    light(chatIdGroup);
+                }
+                Utils.showConsoleLogs(update);
                 System.out.println("autolight working  " + Utils.getTime());
-                //   showMessage(chatId, "working");
             }
         };
+        long delay = 0;
+        long period = 3 * 60 * 1000;
+        timer.scheduleAtFixedRate(task, delay, period);
+    }
 
+    private void autoLight2(Update update ){
+        java.util.Timer timer = new java.util.Timer();
+        task = new TimerTask() {
+            @Override
+            public void run() {
+                System.out.println("svit2 " + svit2);
+                System.out.println("Ewelink.Status2  - " + Ewelink.Status2());
+                if (svit2 != Ewelink.Status2()){
+                    svit2 = Ewelink.Status2();
+                    light2(chatIdGroup);
+                }
+                Utils.showConsoleLogs(update);
+                System.out.println("autolight2 working  " + Utils.getTime());
+            }
+        };
         long delay = 0;
         long period = 3 * 60 * 1000;
         timer.scheduleAtFixedRate(task, delay, period);
@@ -108,27 +120,51 @@ public class SvitHomeBot extends TelegramLongPollingBot {
         if (Ewelink.getRepairStatus()){
             repeir(chatId);
         }
-
         if (light) {
-            svit = true;
-            String msgLight = "Світло є" + " \uD83D\uDCA1 "+ Utils.getTime();
+          // svit = true;
+           sendMessage3.setText(vvod1 + msgLight + Utils.getTime());
             try {
-                executeAsync(sendMessage3);
+                execute(sendMessage3);
             } catch (TelegramApiException e) {
                 e.printStackTrace();
             }
-
         } else {
-            svit = false;
-            String msgNoLight = "Світла нема " + " \uD83D\uDD6F " + Utils.getTime();
-            showMessage(msgNoLight);
+           // svit = false;
+            sendMessage3.setText(vvod1 + msgNoLight + Utils.getTime());
             try {
                 executeAsync(sendMessage3);
             } catch (TelegramApiException e) {
                 e.printStackTrace();
             }
         }
+    }
 
+    private void light2(Long chatId)  {
+        light2 = Ewelink.Status2();
+        SendMessage sendMessage3 = new SendMessage();
+        sendMessage3.setChatId(chatId);
+        if (Ewelink.getRepairStatus()){
+            repeir(chatId);
+        }
+        if (light2) {
+          //  svit2 = true;
+            sendMessage3.setText(vvod2 + warnMsg );
+            sendMessage3.setParseMode("markdown");
+            try {
+                executeAsync(sendMessage3);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+        } else {
+           // svit2 = false;
+            sendMessage3.setText(vvod2 + warnMsg);
+            sendMessage3.setParseMode("markdown");
+            try {
+                executeAsync(sendMessage3);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void repeir(Long chatId)  {
@@ -144,24 +180,4 @@ public class SvitHomeBot extends TelegramLongPollingBot {
     }
 
 
-    public static Long getChatId(Update update) {
-        if (update.hasMessage()) {
-            return update.getMessage().getFrom().getId();
-        }
-        if (update.hasCallbackQuery()) {
-            return update.getCallbackQuery().getFrom().getId();
-        }
-        return null;
-    }
-
-    public void showMessage(String message){
-        SendMessage sendMessage = new SendMessage();
-        sendMessage.setChatId(chatIdstr); //"-1001863421062" - tryam group
-        sendMessage.setText(message);
-        try {
-            execute(sendMessage);
-        } catch (TelegramApiException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }
