@@ -24,6 +24,8 @@ public class SvitHomeBot extends TelegramLongPollingBot {
             *Пристрій потребує встановлення.* """;
     public static final String greeting = """
                 Привіт, я вмію показувати актуальні дані світла в домі (поки що тільки 1й ввод).\n Обговорення та автоматична розсилка повідомлень про стан світла є у цій групі - https://t.me/svithomeVirmenska6""";
+    public static final String groupLink = "Автоматична розсилка повідомлень про стан світла є у цій групі \uD83D\uDC49 https://t.me/svithomeVirmenska6";
+    public static final String ask = "Спитати можно тут \uD83D\uDCDD https://t.me/Tryamkin1";
 
 
     public static void main(String[] args) throws TelegramApiException {
@@ -61,6 +63,14 @@ public class SvitHomeBot extends TelegramLongPollingBot {
         }
         if (update.hasMessage() && update.getMessage().getText().equals("/start")) {
             new Utils().sendMsg(greeting, chatId);
+            Utils.showConsoleLogs(update);
+        }
+        if (update.hasMessage() && update.getMessage().getText().equals("/ask")) {
+            new Utils().sendMsg(ask, chatId);
+            Utils.showConsoleLogs(update);
+        }
+        if (update.hasMessage() && update.getMessage().getText().equals("/group")) {
+            new Utils().sendMsg(groupLink, chatId);
             Utils.showConsoleLogs(update);
         }
 
