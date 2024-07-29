@@ -1,6 +1,7 @@
 package org.example;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,13 +28,17 @@ public class SendNotification {
     }
 
     public static String sendNotification() {
+
+        File currentDir = new File("");
+        String rootPath = currentDir.getAbsolutePath();
+        System.out.println("Root path of the project: " + rootPath);
         StringBuilder str = new StringBuilder();
         List<String> lst = new ArrayList<>();
-
-        try (BufferedReader br = new BufferedReader(new FileReader("messages.txt"))) {
+        String currentDir1 = System.getProperty("user.dir");
+        System.out.println("Current directory: " + currentDir1);
+        try (BufferedReader br = new BufferedReader(new FileReader("./messages.txt"))) {
             // Чтение текущего рабочего каталога
-            String currentDir = System.getProperty("user.dir");
-            System.out.println("Current directory: " + currentDir);
+
 
             String line;
             while ((line = br.readLine()) != null) {
