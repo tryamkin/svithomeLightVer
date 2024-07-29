@@ -8,8 +8,6 @@ import java.util.List;
 
 public class SendNotification {
     public static void main(String[] args) {
-        //  MyBot bot = new MyBot();
-        String chatId = "YOUR_CHAT_ID"; // Укажите нужный chat_id
         StringBuilder str = new StringBuilder();
         List lst = new ArrayList() ;
 
@@ -33,6 +31,7 @@ public class SendNotification {
         List lst = new ArrayList() ;
         try (BufferedReader br = new BufferedReader(new FileReader("messages.txt"))) {
             Process process = Runtime.getRuntime().exec(String.format("bash -c pwd"));
+            System.out.println(process.getInputStream());
             String line;
             while ((line = br.readLine()) != null) {
                 //  bot.sendMessage(chatId, line);
@@ -41,6 +40,8 @@ public class SendNotification {
             }
         } catch (IOException e) {
             System.out.println("Обломс");
+            e.getCause();
+
         }
         return lst.toString();
     }

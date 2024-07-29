@@ -54,7 +54,6 @@ public class SQL {
     }
 
     public static List<Long> selectChatId() throws SQLException {
-       chatIdlst = null;
         Connection connection = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PASSWORD);
         String selectSQL = "SELECT DISTINCT chatId FROM users";
         Statement statement = connection.createStatement();
