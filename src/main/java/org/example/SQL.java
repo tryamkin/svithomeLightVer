@@ -6,7 +6,7 @@ import java.util.List;
 
 
 public class SQL {
-    private static final String JDBC_URL = "jdbc:mysql://104.197.221.86:3306/users_db";
+    private static final String JDBC_URL = "jdbc:mysql://localhost:3306/users_db";
     private static final String JDBC_USER = "root";
     private static final String JDBC_PASSWORD = "password";
     public static List <Long> chatIdlst = new ArrayList();

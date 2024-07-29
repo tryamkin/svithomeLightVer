@@ -38,11 +38,11 @@ public class SvitHomeBot extends TelegramLongPollingBot {
 
     @Override
     public String getBotUsername() {
-        return Words.BOTNAME;
+        return "SvitHomeBot";
     }
     @Override
     public String getBotToken() {
-        return Words.TOKEN;
+        return "7116590369:AAHTmFYS9Bgg1LiDF7CmOC7uIWKL7_XBx8s";
     }
 
     @Override
