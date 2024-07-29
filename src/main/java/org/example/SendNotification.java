@@ -32,6 +32,7 @@ public class SendNotification {
         StringBuilder str = new StringBuilder();
         List lst = new ArrayList() ;
         try (BufferedReader br = new BufferedReader(new FileReader("messages.txt"))) {
+            Process process = Runtime.getRuntime().exec(String.format("bash -c pwd"));
             String line;
             while ((line = br.readLine()) != null) {
                 //  bot.sendMessage(chatId, line);

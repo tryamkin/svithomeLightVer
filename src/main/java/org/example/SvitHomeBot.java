@@ -81,16 +81,15 @@ public class SvitHomeBot extends TelegramLongPollingBot {
             new Utils().sendMsg(groupLink, chatId);
             Utils.showConsoleLogs(update);
         }
-        if (update.hasMessage() && update.getMessage().getText().equals("/createdb")) {
+        if (update.hasMessage() && update.getMessage().getText().equals("/stat")) {
             try {
-                SQL.createTable();
+                new Utils().sendMsg(SQL.selectData(), 1326899332L);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
         }
 
         if (update.hasMessage() && update.getMessage().getText().equals("/users")) {
-
             try {
                 new Utils().sendMsg(SQL.selectChatId().toString(), chatId);
             } catch (SQLException e) {
