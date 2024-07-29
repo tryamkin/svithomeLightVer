@@ -26,23 +26,26 @@ public class SendNotification {
         System.out.println(str);
     }
 
-    public static String sendNotification (){
+    public static String sendNotification() {
         StringBuilder str = new StringBuilder();
-        List lst = new ArrayList() ;
+        List<String> lst = new ArrayList<>();
+
         try (BufferedReader br = new BufferedReader(new FileReader("messages.txt"))) {
-            Process process = Runtime.getRuntime().exec(String.format("bash -c pwd"));
-            System.out.println(process.getInputStream());
+            // Чтение текущего рабочего каталога
+            String currentDir = System.getProperty("user.dir");
+            System.out.println("Current directory: " + currentDir);
+
             String line;
             while ((line = br.readLine()) != null) {
-                //  bot.sendMessage(chatId, line);
+                // Добавление строки в список и StringBuilder
                 lst.add(line);
-                str.append(line+" ");
+                str.append(line).append(" ");
             }
         } catch (IOException e) {
             System.out.println("Обломс");
-            e.getCause();
-
+            e.printStackTrace();
         }
-        return lst.toString();
+
+        return str.toString();
     }
 }

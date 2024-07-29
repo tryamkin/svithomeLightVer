@@ -58,6 +58,7 @@ public class SQL {
         String selectSQL = "SELECT DISTINCT chatId FROM users";
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery(selectSQL);
+        chatIdlst.clear();
         while (resultSet.next()) {
             Long chatID = Long.valueOf(resultSet.getString("chatId"));
             chatIdlst.add (chatID);
