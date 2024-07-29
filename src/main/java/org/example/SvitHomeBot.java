@@ -6,6 +6,8 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
+
+import java.sql.SQLException;
 import java.util.TimerTask;
 
 
@@ -36,11 +38,11 @@ public class SvitHomeBot extends TelegramLongPollingBot {
 
     @Override
     public String getBotUsername() {
-        return "SvitHomeBot";
+        return Words.BOTNAME;
     }
     @Override
     public String getBotToken() {
-        return "7116590369:AAHTmFYS9Bgg1LiDF7CmOC7uIWKL7_XBx8s";
+        return Words.TOKEN;
     }
 
     @Override
@@ -50,7 +52,13 @@ public class SvitHomeBot extends TelegramLongPollingBot {
             light(chatId);
             light2(chatId);
             Utils.showConsoleLogs(update);
+            try {
+                SQL.addUser(update.getMessage().getChat().getFirstName(),chatId);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
+
         if (update.hasMessage() && update.getMessage().getText().equals("/token")) {
             Ewelink.login();
         }
@@ -72,6 +80,29 @@ public class SvitHomeBot extends TelegramLongPollingBot {
         if (update.hasMessage() && update.getMessage().getText().equals("/group")) {
             new Utils().sendMsg(groupLink, chatId);
             Utils.showConsoleLogs(update);
+        }
+        if (update.hasMessage() && update.getMessage().getText().equals("/createdb")) {
+            try {
+                SQL.createTable();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        if (update.hasMessage() && update.getMessage().getText().equals("/users")) {
+
+            try {
+                new Utils().sendMsg(SQL.selectChatId().toString(), chatId);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        if (update.hasMessage() && update.getMessage().getText().equals("/sendNews")) {
+           String notification = SendNotification.sendNotification();
+            for (int i = 0; i <SQL.chatIdlst.size() ; i++) {
+                new Utils().sendMsg(notification, (Long) SQL.chatIdlst.get(i));
+            }
+
         }
 
     }
@@ -119,7 +150,6 @@ public class SvitHomeBot extends TelegramLongPollingBot {
 
     public void stopAutoLight() {
         task.cancel();
-
     }
 
 
@@ -131,7 +161,6 @@ public class SvitHomeBot extends TelegramLongPollingBot {
             repeir(chatId);
         }
         if (light) {
-          // svit = true;
            sendMessage3.setText(vvod1 + msgLight + Utils.getTime());
             try {
                 execute(sendMessage3);
@@ -139,7 +168,6 @@ public class SvitHomeBot extends TelegramLongPollingBot {
                 e.printStackTrace();
             }
         } else {
-           // svit = false;
             sendMessage3.setText(vvod1 + msgNoLight + Utils.getTime());
             try {
                 executeAsync(sendMessage3);
@@ -157,7 +185,6 @@ public class SvitHomeBot extends TelegramLongPollingBot {
             repeir(chatId);
         }
         if (light2) {
-          //  svit2 = true;
             sendMessage3.setText(vvod2 + msgLight+ Utils.getTime() + " тестується" );
             sendMessage3.setParseMode("markdown");
             try {
@@ -166,7 +193,6 @@ public class SvitHomeBot extends TelegramLongPollingBot {
                 e.printStackTrace();
             }
         } else {
-           // svit2 = false;
             sendMessage3.setText(vvod2 + msgNoLight + Utils.getTime() + " тестується");
             sendMessage3.setParseMode("markdown");
             try {
