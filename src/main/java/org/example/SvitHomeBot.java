@@ -1,5 +1,10 @@
 package org.example;
 
+import org.example.SQL.SQL;
+import org.example.service.Ewelink;
+import org.example.service.SendCurlToGroup;
+import org.example.service.SendNotification;
+import org.example.service.Utils;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -7,23 +12,24 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.TimerTask;
+import java.util.concurrent.TimeoutException;
 
+import static org.example.config.Resources.*;
 
+//TODO сменить токен и проверить как добавляются в базу статы. Сделать рефактор и доработать статистику для статов через ифы
 public class SvitHomeBot extends TelegramLongPollingBot {
     private static boolean light ;
     private static boolean light2 ;
     private static boolean svit ;
     private static boolean svit2 ;
     private static TimerTask task;
-    static Long chatIdGroup = -1002154614126L ;
     static String msgLight = "світло є" + " \uD83D\uDCA1 ";
     static String msgNoLight = "світла нема " + " \uD83D\uDD6F ";
-    static String vvod1 = "Перший ввод - " ;
-    static String vvod2 = "Другий ввод - " ;
-    public static final String warnMsg = """ 
-            *Пристрій потребує встановлення.* """;
+    static String vvod1 = "1️⃣ ввод - " ;
+    static String vvod2 = "2️⃣ ввод - " ;
     public static final String greeting = """
                 Привіт, я вмію показувати актуальні дані світла в домі (поки що тільки 1й ввод).\n Обговорення та автоматична розсилка повідомлень про стан світла є у цій групі - https://t.me/svithomeVirmenska6""";
     public static final String groupLink = "Автоматична розсилка повідомлень про стан світла є у цій групі \uD83D\uDC49 https://t.me/svithomeVirmenska6";
@@ -38,11 +44,11 @@ public class SvitHomeBot extends TelegramLongPollingBot {
 
     @Override
     public String getBotUsername() {
-        return "SvitHomeBot";
+        return BotUsername;
     }
     @Override
     public String getBotToken() {
-        return "7116590369:AAHTmFYS9Bgg1LiDF7CmOC7uIWKL7_XBx8s";
+        return BotToken;
     }
 
     @Override
@@ -63,7 +69,7 @@ public class SvitHomeBot extends TelegramLongPollingBot {
             Ewelink.login();
         }
         if (update.hasMessage() && update.getMessage().getText().equals("/auto")) {
-            autoLight(-1002154614126L , update);
+            autoLight(chatIdGroup , update);
             autoLight2(update);
         }
         if (update.hasMessage() && update.getMessage().getText().equals("/stop")) {
@@ -81,6 +87,29 @@ public class SvitHomeBot extends TelegramLongPollingBot {
             new Utils().sendMsg(groupLink, chatId);
             Utils.showConsoleLogs(update);
         }
+        if (update.hasMessage() && update.getMessage().getText().equals("/sql")) {
+            try {
+                SQL.createTable();
+                SQL.createTableStats();
+                SQL.addStat("online");
+                SQL.selectData();
+                SQL.showStat();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        if (update.hasMessage() && update.getMessage().getText().equals("/free")) {
+            try {
+                SendCurlToGroup.sendMsg();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            } catch (TimeoutException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
         if (update.hasMessage() && update.getMessage().getText().equals("/stat")) {
             try {
                 new Utils().sendMsg(SQL.selectData(), 1326899332L);
@@ -91,12 +120,13 @@ public class SvitHomeBot extends TelegramLongPollingBot {
 
         if (update.hasMessage() && update.getMessage().getText().equals("/users")) {
             try {
-                new Utils().sendMsg(SQL.selectChatId().toString(), chatId);
+                new Utils().sendMsg(SQL.selectChatId().toString()+ " Total users - " + SQL.selectChatId().size(), chatId);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
         }
         if (update.hasMessage() && update.getMessage().getText().equals("/sendNews")) {
+            //TODO сделать как у Олега
            String notification = SendNotification.sendNotification();
             for (int i = 0; i <SQL.chatIdlst.size() ; i++) {
                 new Utils().sendMsg(notification, (Long) SQL.chatIdlst.get(i));
@@ -106,16 +136,21 @@ public class SvitHomeBot extends TelegramLongPollingBot {
 
     }
 
+    //todo использовать @sceduled (fixrate = 360000)
     private void autoLight(Long chatId, Update update ){
         java.util.Timer timer = new java.util.Timer();
         task = new TimerTask() {
             @Override
             public void run() {
-
                 System.out.println("svit " + svit);
-                System.out.println("Ewelink.Status - " + Ewelink.Status());
+                System.out.println("Ewelink.Status - " + Ewelink.isOnline());
                 if (svit != Ewelink.Status()) {
                     svit = Ewelink.Status();
+                    try {
+                        SQL.addStat("no");
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
                     light(chatIdGroup);
                 }
                 Utils.showConsoleLogs(update);
@@ -184,7 +219,7 @@ public class SvitHomeBot extends TelegramLongPollingBot {
             repeir(chatId);
         }
         if (light2) {
-            sendMessage3.setText(vvod2 + msgLight+ Utils.getTime() + " тестується" );
+            sendMessage3.setText(vvod2 +  " не встановлен" );// + msgLight+ Utils.getTime() +
             sendMessage3.setParseMode("markdown");
             try {
                 executeAsync(sendMessage3);
@@ -192,7 +227,7 @@ public class SvitHomeBot extends TelegramLongPollingBot {
                 e.printStackTrace();
             }
         } else {
-            sendMessage3.setText(vvod2 + msgNoLight + Utils.getTime() + " тестується");
+            sendMessage3.setText(vvod2 + " не встановлен"); //+ msgNoLight + Utils.getTime()
             sendMessage3.setParseMode("markdown");
             try {
                 executeAsync(sendMessage3);

@@ -1,9 +1,12 @@
-package org.example;
+package org.example.service;
 
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
+import org.example.config.Resources;
 
 import static io.restassured.RestAssured.given;
+import static org.example.config.Resources.EwelinkEmail;
+import static org.example.config.Resources.EwelinkPassword;
 
 public class Ewelink {
     private static final String API_URL = "https://eu-apia.coolkit.cc/v2/device/thing";
@@ -12,6 +15,11 @@ public class Ewelink {
     private static final String ORIGIN_HEADER = "origin: https://web.ewelink.cc";
     private static final String REQUEST_BODY = "{\"thingList\":[{\"id\":\"100063cabd\"}]}";
     private static final String REQUEST_BODY2 = "{\"thingList\":[{\"id\":\"10000d43dd\"}]}";
+
+    public static boolean isOnline() {
+        return online;
+    }
+
     private static boolean online;
     private static boolean repair = false;
 
@@ -29,7 +37,7 @@ public class Ewelink {
                 .header("Content-Type", CONTENT_TYPE_HEADER)
                 .headers("x-ck-appid","K0OCDSvIaBWdEaU4zxlKEwk26kmshoXK")
                 .header("Origin", ORIGIN_HEADER)
-                .body("{\"countryCode\":\"+380\",\"password\":\"12345678\",\"lang\":\"en\",\"email\":\"tryamkin@gmail.com\"}")
+                .body(String.format( "{\"countryCode\":\"+380\",\"password\":\"%s\",\"lang\":\"en\",\"email\":\"%s\"}",EwelinkPassword, EwelinkEmail))
                 .when()
                 .post()
                 .then()
@@ -66,9 +74,6 @@ public class Ewelink {
         Utils.showTime();
         // System.out.println("Errors - " + jsonPath.get("error").toString());
         online = jsonPath.get("data.thingList[0].itemData.online");
-      //  System.out.println("Online Vvod1 - " +jsonPath.get("data.thingList[0].itemData.online").toString());
-        //System.out.println("switch - " +jsonPath.get("data.thingList[0].itemData.params.switch").toString());
-        //  System.out.println("pulse - " +jsonPath.get("data.thingList[0].itemData.params.pulse").toString());
         repair = false;
         return online;
     }
@@ -85,8 +90,6 @@ public class Ewelink {
                 .when()
                 .post()
                 .then()
-                // .statusCode(200) // Assert successful response (optional)
-                //.log().body()
                 .extract().response();
         JsonPath jsonPath = response.jsonPath();
         if (jsonPath.get("error").toString().equals("401")){

@@ -6,7 +6,7 @@
   </component>
   <component name="DBNavigator.Project.DataEditorManager">
     <record-view-column-sorting-type value="BY_INDEX" />
-    <value-preview-text-wrapping value="true" />
+    <value-preview-text-wrapping value="false" />
     <value-preview-pinned value="false" />
   </component>
   <component name="DBNavigator.Project.DatabaseBrowserManager">
@@ -17,7 +17,7 @@
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="7955b2eb-c664-4a26-ac3c-4f90f6860141">
-      <console name="Connection" type="STANDARD" schema="" session="Main" />
+      <console name="Connection" type="STANDARD" schema="users_db" session="Main"><![CDATA[INSERT INTO users values ('name', chatId, 'date')]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseEditorStateManager">
@@ -29,9 +29,20 @@
   <component name="DBNavigator.Project.DatabaseSessionManager">
     <connection id="7955b2eb-c664-4a26-ac3c-4f90f6860141" />
   </component>
+  <component name="DBNavigator.Project.DatasetFilterManager">
+    <filter-actions connection-id="7955b2eb-c664-4a26-ac3c-4f90f6860141" dataset="users_db.users" active-filter-id="" />
+  </component>
+  <component name="DBNavigator.Project.ExecutionManager">
+    <retain-sticky-names value="false" />
+  </component>
   <component name="DBNavigator.Project.ObjectQuickFilterManager">
     <last-used-operator value="EQUAL" />
     <filters />
+  </component>
+  <component name="DBNavigator.Project.ScriptExecutionManager" clear-outputs="true">
+    <recently-used-interfaces>
+      <mapping database-type="MYSQL" interface-id="DEFAULT" />
+    </recently-used-interfaces>
   </component>
   <component name="DBNavigator.Project.Settings">
     <connections>
@@ -48,12 +59,12 @@
           <url-type value="DATABASE" />
           <host value="104.197.221.86" />
           <port value="3306" />
-          <database value="users_db" />
+          <database value="users1_db" />
           <tns-folder value="" />
           <tns-profile value="" />
           <type value="USER_PASSWORD" />
-          <user value="root" />
-          <deprecated-pwd value="cGFzc3dvcmQ=" />
+          <user value="Tar" />
+          <deprecated-pwd value="cGFzc3dk" />
         </database>
         <properties>
           <auto-commit value="false" />

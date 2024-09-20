@@ -1,5 +1,6 @@
-package org.example;
+package org.example.service;
 
+import org.example.SvitHomeBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -8,7 +9,9 @@ import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Utils extends SvitHomeBot{
+import static org.example.config.Resources.chatIdGroup;
+
+public class Utils extends SvitHomeBot {
    static String time ;
     public static void showTime() {
         Date now = new Date();
