@@ -1,10 +1,9 @@
 package org.example;
 
-import org.example.SQL.SQL;
 import org.example.service.Ewelink;
 import org.example.service.SendCurlToGroup;
-import org.example.service.SendNotification;
 import org.example.service.Utils;
+import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -19,7 +18,6 @@ import java.util.concurrent.TimeoutException;
 
 import static org.example.config.Resources.*;
 
-//TODO сменить токен и проверить как добавляются в базу статы. Сделать рефактор и доработать статистику для статов через ифы
 public class SvitHomeBot extends TelegramLongPollingBot {
     private static boolean light ;
     private static boolean light2 ;
@@ -58,12 +56,7 @@ public class SvitHomeBot extends TelegramLongPollingBot {
             light(chatId);
             light2(chatId);
             Utils.showConsoleLogs(update);
-            try {
-                SQL.addUser(update.getMessage().getChat().getFirstName(),chatId);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        }
+       }
 
         if (update.hasMessage() && update.getMessage().getText().equals("/token")) {
             Ewelink.login();
@@ -83,21 +76,7 @@ public class SvitHomeBot extends TelegramLongPollingBot {
             new Utils().sendMsg(ask, chatId);
             Utils.showConsoleLogs(update);
         }
-        if (update.hasMessage() && update.getMessage().getText().equals("/group")) {
-            new Utils().sendMsg(groupLink, chatId);
-            Utils.showConsoleLogs(update);
-        }
-        if (update.hasMessage() && update.getMessage().getText().equals("/sql")) {
-            try {
-                SQL.createTable();
-                SQL.createTableStats();
-                SQL.addStat("online");
-                SQL.selectData();
-                SQL.showStat();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        }
+
         if (update.hasMessage() && update.getMessage().getText().equals("/free")) {
             try {
                 SendCurlToGroup.sendMsg();
@@ -110,33 +89,10 @@ public class SvitHomeBot extends TelegramLongPollingBot {
             }
 
         }
-        if (update.hasMessage() && update.getMessage().getText().equals("/stat")) {
-            try {
-                new Utils().sendMsg(SQL.selectData(), 1326899332L);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        }
 
-        if (update.hasMessage() && update.getMessage().getText().equals("/users")) {
-            try {
-                new Utils().sendMsg(SQL.selectChatId().toString()+ " Total users - " + SQL.selectChatId().size(), chatId);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        if (update.hasMessage() && update.getMessage().getText().equals("/sendNews")) {
-            //TODO сделать как у Олега
-           String notification = SendNotification.sendNotification();
-            for (int i = 0; i <SQL.chatIdlst.size() ; i++) {
-                new Utils().sendMsg(notification, (Long) SQL.chatIdlst.get(i));
-            }
-
-        }
 
     }
 
-    //todo использовать @sceduled (fixrate = 360000)
     private void autoLight(Long chatId, Update update ){
         java.util.Timer timer = new java.util.Timer();
         task = new TimerTask() {
@@ -146,11 +102,6 @@ public class SvitHomeBot extends TelegramLongPollingBot {
                 System.out.println("Ewelink.Status - " + Ewelink.isOnline());
                 if (svit != Ewelink.Status()) {
                     svit = Ewelink.Status();
-                    try {
-                        SQL.addStat("no");
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
                     light(chatIdGroup);
                 }
                 Utils.showConsoleLogs(update);

@@ -23,11 +23,6 @@ public class Ewelink {
     private static boolean online;
     private static boolean repair = false;
 
-    public static void main(String[] args) throws InterruptedException {
-        Status();
-        Status2();
-    }
-
 
     public static String login (){
 
@@ -63,8 +58,6 @@ public class Ewelink {
                 .when()
                 .post()
                 .then()
-                // .statusCode(200) // Assert successful response (optional)
-                //.log().body()
                 .extract().response();
         JsonPath jsonPath = response.jsonPath();
         if (jsonPath.get("error").toString().equals("401")){
@@ -98,7 +91,6 @@ public class Ewelink {
 
         Utils.showTime();
         online = jsonPath.get("data.thingList[0].itemData.online");
-      //  System.out.println("Online Vvod2 - " +jsonPath.get("data.thingList[0].itemData.online").toString());
         repair = false;
         return online;
     }
